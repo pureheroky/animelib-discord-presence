@@ -1,0 +1,111 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f6f7f9;
+  --fg: #1c1e21;
+  --muted: #6b7280;
+  --card: #ffffff;
+  --line: #e3e5e8;
+  --accent: #5865f2;
+  --ok: #3ba55d;
+  --bad: #ed4245;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1b1e; --fg: #e8eaed; --muted: #9aa0a6;
+    --card: #232428; --line: #35373b;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0 auto; padding: 28px 20px 60px; max-width: 620px;
+  background: var(--bg); color: var(--fg);
+  font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+h1 { font-size: 20px; margin: 0 0 20px; }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em;
+     color: var(--muted); margin: 0 0 10px; }
+section { margin-bottom: 26px; }
+.muted { color: var(--muted); font-size: 12px; }
+
+.status {
+  display: flex; gap: 12px; align-items: center;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 26px;
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; }
+.dot.ok { background: var(--ok); }
+.dot.bad { background: var(--bad); }
+
+.row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 10px; padding: 11px 14px; margin-bottom: 8px; cursor: pointer;
+}
+.row span { display: flex; flex-direction: column; }
+.row em { font-style: normal; color: var(--muted); font-size: 12px; }
+.row .lbl { flex: 1; }
+.row select, .row input[type="text"] {
+  margin-left: auto; background: var(--bg); color: var(--fg);
+  border: 1px solid var(--line); border-radius: 7px; padding: 5px 8px; font: inherit;
+}
+.row input[type="text"] { width: 220px; }
+input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); flex: none; }
+
+/* Карточка рисуется в палитре Discord всегда — она должна выглядеть так же,
+   как у того, кто смотрит на твой профиль, а не так же, как эта страница. */
+.discord {
+  background: #232428; border-radius: 10px; padding: 16px;
+  color: #f2f3f5; font-size: 14px; line-height: 1.35;
+}
+.dc-head {
+  font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .02em; color: #b5bac1; margin-bottom: 10px;
+}
+.dc-body { display: flex; gap: 12px; }
+.dc-art { position: relative; flex: none; }
+.dc-cover {
+  width: 60px; height: 60px; border-radius: 8px;
+  background: #1e1f22 center/cover no-repeat;
+}
+.dc-badge {
+  position: absolute; right: -5px; bottom: -5px;
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #232428; background: #5865f2 center/cover no-repeat;
+}
+.dc-badge:empty[hidden] { display: none; }
+.dc-lines { min-width: 0; flex: 1; }
+.dc-details { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dc-state { color: #b5bac1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dc-bar {
+  margin-top: 8px; height: 4px; border-radius: 2px; background: #4e5058; overflow: hidden;
+}
+.dc-bar i { display: block; height: 100%; background: #f2f3f5; border-radius: 2px; }
+.dc-times {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: #b5bac1; margin-top: 3px; font-variant-numeric: tabular-nums;
+}
+.dc-button {
+  margin-top: 12px; text-align: center; padding: 8px;
+  background: #4e5058; border-radius: 4px; font-size: 14px; font-weight: 500;
+}
+.dc-button:empty { display: none; }
+.dc-bar[hidden], .dc-times[hidden] { display: none; }
+
+.card {
+  display: flex; gap: 14px; background: var(--card);
+  border: 1px solid var(--line); border-radius: 10px; padding: 16px;
+}
+.cover {
+  width: 68px; height: 68px; border-radius: 8px; flex: none;
+  background: var(--accent) center/cover no-repeat;
+}
+.lines { min-width: 0; }
+.pv-app { font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
+          color: var(--muted); margin-bottom: 4px; }
+.pv-details { font-weight: 600; }
+.pv-state, .pv-time { font-size: 13px; color: var(--muted); }
+.pv-button {
+  margin-top: 8px; display: inline-block; padding: 5px 12px;
+  border: 1px solid var(--line); border-radius: 6px; font-size: 12px;
+}
+.pv-button:empty { display: none; }

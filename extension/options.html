@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>AnimeLib → Discord Presence</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <h1>AnimeLib → Discord Presence</h1>
+
+  <section class="status" id="status">
+    <div class="dot" id="dot"></div>
+    <div>
+      <div id="statusLine">Проверяю связь…</div>
+      <div class="muted" id="statusHint"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Основное</h2>
+    <label class="row">
+      <input type="checkbox" id="enabled">
+      <span><b>Показывать статус</b><em>Общий выключатель</em></span>
+    </label>
+    <label class="row">
+      <input type="checkbox" id="onlyWhenFocused">
+      <span>Только на активной вкладке<em>Статус виден, пока вкладка с аниме открыта и выбрана. Переход в другое приложение - например в сам Discord - статус не гасит</em></span>
+    </label>
+    <label class="row">
+      <input type="checkbox" id="titleInHeader">
+      <span>Название тайтла в шапке<em>Вместо имени приложения. Выключено - в шапке останется имя Discord-приложения, а название уйдёт в первую строку</em></span>
+    </label>
+    <label class="row">
+      <span class="lbl">Тип активности</span>
+      <select id="activityType">
+        <option value="3">Смотрит</option>
+        <option value="0">Играет в</option>
+        <option value="2">Слушает</option>
+      </select>
+    </label>
+    <label class="row">
+      <span class="lbl">Таймер</span>
+      <select id="timestampMode">
+        <option value="remaining">Сколько осталось</option>
+        <option value="elapsed">Сколько прошло</option>
+        <option value="off">Без таймера</option>
+      </select>
+    </label>
+  </section>
+
+  <section>
+    <h2>Что показывать</h2>
+    <label class="row">
+      <input type="checkbox" id="showTeam">
+      <span>Озвучку<em>«· AniLibria.TV» в строке статуса</em></span>
+    </label>
+    <label class="row">
+      <input type="checkbox" id="showCover">
+      <span>Обложку<em>Картинка тайтла вместо иконки приложения</em></span>
+    </label>
+    <label class="row">
+      <input type="checkbox" id="showButton">
+      <span>Кнопку под статусом<em>Тебе она не видна — только другим</em></span>
+    </label>
+    <label class="row">
+      <span class="lbl">Текст кнопки</span>
+      <input type="text" id="buttonLabel" maxlength="32">
+    </label>
+  </section>
+
+  <section>
+    <h2>Приватность</h2>
+    <label class="row">
+      <input type="checkbox" id="hideTitle">
+      <span>Скрывать название<em>В статусе останется только «смотрит аниме», без тайтла, серии и озвучки</em></span>
+    </label>
+  </section>
+
+  <section>
+    <h2>Предпросмотр</h2>
+    <p class="muted" id="pvSource"></p>
+    <div class="discord">
+      <div class="dc-head" id="pvHead">Watching AnimeLib</div>
+      <div class="dc-body">
+        <div class="dc-art">
+          <div class="dc-cover" id="pvCover"></div>
+          <div class="dc-badge" id="pvBadge"></div>
+        </div>
+        <div class="dc-lines">
+          <div class="dc-details" id="pvDetails"></div>
+          <div class="dc-state" id="pvState"></div>
+          <div class="dc-bar" id="pvBar"><i id="pvFill"></i></div>
+          <div class="dc-times" id="pvTimes"><span id="pvLeft"></span><span id="pvRight"></span></div>
+        </div>
+      </div>
+      <div class="dc-button" id="pvButton"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Диагностика</h2>
+    <label class="row">
+      <input type="checkbox" id="debug">
+      <span>Подробный лог<em id="logPath">Пишется в файл рядом с мостом</em></span>
+    </label>
+  </section>
+
+  <script src="options.js"></script>
+</body>
+</html>
