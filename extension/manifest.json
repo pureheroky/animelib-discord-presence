@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AnimeLib → Discord Presence",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Shows the anime you are watching on AnimeLib in your Discord status.",
   "browser_specific_settings": {
     "gecko": {
@@ -11,7 +11,8 @@
         "required": [
           "none"
         ]
-      }
+      },
+      "update_url": "https://raw.githubusercontent.com/pureheroky/animelib-discord-presence/main/updates.json"
     }
   },
   "permissions": [

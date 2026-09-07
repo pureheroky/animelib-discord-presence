@@ -20,13 +20,25 @@ MAX_MESSAGE = 64 * 1024 * 1024
 
 
 def open_streams():
-    """Returns (stdin_binary, stdout_binary) in binary mode on every platform."""
+    """Returns (stdin_binary, stdout_binary) in binary mode on every platform.
+
+    Taken from the raw file descriptors rather than sys.stdin/sys.stdout: a
+    frozen windowed build has no console, and Python may leave those set to
+    None or to a dummy writer. The descriptors Firefox hands us are real
+    either way.
+    """
     if os.name == "nt":
         import msvcrt
 
-        msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
-        msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
-    return sys.stdin.buffer, sys.stdout.buffer
+        for fd in (0, 1):
+            try:
+                msvcrt.setmode(fd, os.O_BINARY)
+            except OSError:
+                pass
+    try:
+        return os.fdopen(0, "rb", 0), os.fdopen(1, "wb", 0)
+    except OSError:
+        return sys.stdin.buffer, sys.stdout.buffer
 
 
 def _read_exact(stream, size: int) -> bytes | None:
