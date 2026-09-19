@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AnimeLib → Discord Presence",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Shows the anime you are watching on AnimeLib in your Discord status.",
   "browser_specific_settings": {
     "gecko": {

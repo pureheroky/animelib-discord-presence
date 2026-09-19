@@ -119,10 +119,42 @@ function renderPreview() {
     settings.showButton && s.url ? settings.buttonLabel || '' : '';
 }
 
+// Discord draws the progress bar only when it knows both the position and the
+// duration of the episode. If either is missing the status still shows, just
+// without the bar — so say plainly which one is missing and why.
+function renderTimer(info) {
+  const box = el('statusTimer');
+  const s = info && info.state;
+  if (!s) {
+    box.textContent = '';
+    return;
+  }
+  const known = Number.isFinite(s.position) && Number.isFinite(s.duration) && s.duration > 0;
+  const where = { page: 'плеер на странице', frame: 'плеер во фрейме', none: 'плеер не найден' }[
+    s.playerSource || 'none'
+  ];
+  if (known) {
+    box.textContent = 'Полоса прогресса: ' + clock(s.position) + ' из ' + clock(s.duration)
+      + ' · ' + where;
+    return;
+  }
+  const why = s.playerSource === 'page'
+    ? 'плеер найден, но не сообщает длительность — обычно это ещё не загрузившаяся серия'
+    : 'таймкод не приходит; если серия идёт через Kodik, нужна версия 1.0.7 или новее '
+      + 'и перезагрузка вкладки после обновления';
+  box.textContent = 'Полосы прогресса нет: ' + why;
+}
+
 function renderStatus(info) {
   const dot = el('dot');
   const line = el('statusLine');
   const hint = el('statusHint');
+
+  el('statusVersions').textContent = info
+    ? 'Расширение ' + (info.version || '?')
+      + (info.hostVersion ? ' · мост ' + info.hostVersion : ' · мост не отвечает')
+    : '';
+  renderTimer(info);
 
   if (!info) {
     dot.className = 'dot';

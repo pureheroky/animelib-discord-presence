@@ -10,9 +10,34 @@
   const TICK_MS = 1000;
   let video = null;
 
+  // The player may sit in a nested same-origin frame or behind a shadow root,
+  // so a flat querySelectorAll is not enough.
+  function deepVideos(root, out = [], depth = 0) {
+    if (!root || depth > 4 || typeof root.querySelectorAll !== 'function') return out;
+    try {
+      root.querySelectorAll('video').forEach((v) => out.push(v));
+    } catch {}
+    try {
+      root.querySelectorAll('iframe').forEach((f) => {
+        let doc = null;
+        try {
+          doc = f.contentDocument;
+        } catch {}
+        if (doc) deepVideos(doc, out, depth + 1);
+      });
+    } catch {}
+    try {
+      root.querySelectorAll('*').forEach((el) => {
+        if (el.shadowRoot) deepVideos(el.shadowRoot, out, depth + 1);
+      });
+    } catch {}
+    return out;
+  }
+
   function findVideo() {
     if (video && video.isConnected) return video;
-    const found = Array.from(document.querySelectorAll('video'));
+    const found = deepVideos(document);
+    // The real episode is the longest track, not a preview or an ad.
     found.sort((a, b) => (b.duration || 0) - (a.duration || 0));
     video = found[0] || null;
     return video;

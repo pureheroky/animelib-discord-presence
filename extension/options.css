@@ -26,6 +26,7 @@ h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em;
      color: var(--muted); margin: 0 0 10px; }
 section { margin-bottom: 26px; }
 .muted { color: var(--muted); font-size: 12px; }
+.versions { margin-top: 4px; opacity: .75; font-variant-numeric: tabular-nums; }
 
 .status {
   display: flex; gap: 12px; align-items: center;

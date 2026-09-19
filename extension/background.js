@@ -78,8 +78,12 @@ function send(message) {
   }
 }
 
+let hostVersion = null;
+
 function onHostMessage(msg) {
-  if (msg.type === 'ready') {
+  if (msg.type === 'hello') {
+    hostVersion = msg.version;
+  } else if (msg.type === 'ready') {
     hostState = { discord: true, user: msg.user, error: null };
   } else if (msg.type === 'status') {
     hostState = { ...hostState, discord: !!msg.discord };
@@ -117,6 +121,8 @@ browser.runtime.onMessage.addListener((msg, sender) => {
       showing: currentWinner() ? currentWinner().state.title : null,
       cover: currentWinner() ? !!currentWinner().state.cover : null,
       state: currentWinner() ? dress(currentWinner().state) : null,
+      version: browser.runtime.getManifest().version,
+      hostVersion,
       settings,
     });
   }
@@ -179,12 +185,17 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
 
 function merged(tabId, entry) {
   const state = { ...entry.state };
+  // Where the timecode came from. Discord only draws a progress bar when it
+  // knows both position and duration, so this is the first thing to look at
+  // when the bar is missing.
+  state.playerSource = state.hasLocalPlayer ? 'page' : 'none';
   if (!state.hasLocalPlayer) {
     const frame = framePlayers.get(tabId);
     if (frame && Date.now() - frame.at < FRAME_FRESH_MS) {
       state.position = frame.position;
       state.duration = frame.duration;
       state.status = frame.paused ? 'paused' : 'playing';
+      state.playerSource = 'frame';
     }
   }
   return state;
