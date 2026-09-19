@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AnimeLib → Discord Presence",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Shows the anime you are watching on AnimeLib in your Discord status.",
   "browser_specific_settings": {
     "gecko": {
@@ -71,6 +71,8 @@
     },
     {
       "matches": [
+        "https://kodikplayer.com/*",
+        "https://*.kodikplayer.com/*",
         "https://kodik.info/*",
         "https://*.kodik.info/*",
         "https://kodik.cc/*",

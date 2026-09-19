@@ -157,7 +157,10 @@
     if (teamCache.has(cacheKey)) return teamCache.get(cacheKey);
     const text = document.body ? document.body.innerText : '';
     const shown = named.find((n) => text.includes(n)) || '';
-    teamCache.set(cacheKey, shown);
+    // Only remember a hit. Caching the miss would freeze an empty dub name in
+    // place: the scan fails while the page is still rendering, and the cached
+    // blank then wins forever.
+    if (shown) teamCache.set(cacheKey, shown);
     return shown;
   }
 
@@ -179,6 +182,29 @@
       episodeName: typeof ep.name === 'string' ? ep.name : '',
       team: pickTeam(ep),
     };
+  }
+
+  // Resolution blinks out now and then: the URL loses its episode parameter
+  // mid-navigation, or the episode has not been fetched back yet. Without this
+  // the dub name drops out of the status and returns a moment later.
+  let lastResolved = null;   // { key, episode, value }
+
+  function keepKnown(resolved) {
+    const key = animeKey();
+    const prev = lastResolved;
+    const sameEpisode = prev && prev.key === key
+      && (resolved.episode == null || prev.episode === resolved.episode);
+
+    if (sameEpisode) {
+      if (!resolved.team) resolved.team = prev.value.team;
+      if (resolved.episode == null) resolved.episode = prev.value.episode;
+      if (resolved.season == null) resolved.season = prev.value.season;
+      if (!resolved.episodeName) resolved.episodeName = prev.value.episodeName;
+    }
+    if (resolved.team || resolved.episode != null) {
+      lastResolved = { key, episode: resolved.episode, value: { ...resolved } };
+    }
+    return resolved;
   }
 
   function totalEpisodes(anime) {
@@ -275,7 +301,7 @@
     const v = currentVideo();
     const anime = lookupAnime();
     const fromTitle = parseTitleInfo();
-    const ep = resolveEpisode(anime, fromTitle);
+    const ep = keepKnown(resolveEpisode(anime, fromTitle));
 
     const title = (anime && (anime.rus_name || anime.name || anime.eng_name)) || fromTitle.name;
     if (!title) return null;
