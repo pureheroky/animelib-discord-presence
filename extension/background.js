@@ -188,10 +188,16 @@ function merged(tabId, entry) {
   // Where the timecode came from. Discord only draws a progress bar when it
   // knows both position and duration, so this is the first thing to look at
   // when the bar is missing.
+  const timed = (d) => Number.isFinite(d) && d > 0;
   state.playerSource = state.hasLocalPlayer ? 'page' : 'none';
-  if (!state.hasLocalPlayer) {
+
+  // Pick whichever source actually knows the length of the episode. Trusting
+  // hasLocalPlayer alone let a useless element on the page shadow the real
+  // timecode coming back from the player frame.
+  if (!timed(state.duration)) {
     const frame = framePlayers.get(tabId);
-    if (frame && Date.now() - frame.at < FRAME_FRESH_MS) {
+    const fresh = frame && Date.now() - frame.at < FRAME_FRESH_MS;
+    if (fresh && (timed(frame.duration) || !state.hasLocalPlayer)) {
       state.position = frame.position;
       state.duration = frame.duration;
       state.status = frame.paused ? 'paused' : 'playing';

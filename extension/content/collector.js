@@ -280,9 +280,20 @@
     return out;
   }
 
+  // A <video> with no duration is not a player: pages keep placeholder elements
+  // around, and a stuck one reports position 0 forever. Treat it as usable only
+  // once it knows how long the track is.
+  const usable = (v) => !!v && Number.isFinite(v.duration) && v.duration > 0;
+
   let video = null;
+  const wired = new WeakSet();
+
   function currentVideo() {
-    if (video && video.isConnected) return video;
+    // Keep the cached element only while it stays usable — the real player is
+    // often swapped in after a placeholder, and latching onto the placeholder
+    // would freeze the timecode at zero.
+    if (video && video.isConnected && usable(video)) return video;
+
     const found = deepVideos(document);
     if (!found.length) {
       video = null;
@@ -290,8 +301,11 @@
     }
     found.sort((a, b) => (b.duration || 0) - (a.duration || 0));
     video = found[0];
-    for (const evt of ['play', 'pause', 'seeked', 'ended', 'loadedmetadata']) {
-      video.addEventListener(evt, () => tick(true), { passive: true });
+    if (!wired.has(video)) {
+      wired.add(video);
+      for (const evt of ['play', 'pause', 'seeked', 'ended', 'loadedmetadata']) {
+        video.addEventListener(evt, () => tick(true), { passive: true });
+      }
     }
     return video;
   }
@@ -306,9 +320,12 @@
     const title = (anime && (anime.rus_name || anime.name || anime.eng_name)) || fromTitle.name;
     if (!title) return null;
 
-    const local = v
+    // Only a usable element counts as a local player. Otherwise hasLocalPlayer
+    // would stay true for a placeholder and the background would never fall
+    // back to the timecode relayed from the player frame.
+    const local = usable(v)
       ? {
-          duration: Number.isFinite(v.duration) ? v.duration : undefined,
+          duration: v.duration,
           position: Number.isFinite(v.currentTime) ? v.currentTime : undefined,
           playing: !v.paused && !v.ended && v.readyState >= 2,
         }

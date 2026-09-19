@@ -34,8 +34,12 @@
     return out;
   }
 
+  const usable = (v) => !!v && Number.isFinite(v.duration) && v.duration > 0;
+
   function findVideo() {
-    if (video && video.isConnected) return video;
+    // Same trap as on the page above: keep looking until an element that knows
+    // its duration shows up, instead of latching onto a placeholder.
+    if (video && video.isConnected && usable(video)) return video;
     const found = deepVideos(document);
     // The real episode is the longest track, not a preview or an ad.
     found.sort((a, b) => (b.duration || 0) - (a.duration || 0));
