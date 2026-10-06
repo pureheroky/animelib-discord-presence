@@ -18,7 +18,7 @@ from presence import config, nativehost, register as reg
 from presence.bridge import Bridge
 from presence.logs import Log
 
-VERSION = "2.0.0"
+VERSION = "2.0.1"
 
 
 def _cli(argv: list[str]) -> int:

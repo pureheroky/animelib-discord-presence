@@ -196,4 +196,6 @@ class Bridge:
             return
         self._sent = self._latest
         self._last_sent_at = time.time()
-        self.log.info("> %s — %s" % (activity["details"], activity["state"]))
+        self.log.info("> %s" % " — ".join(
+            activity[key] for key in ("name", "details", "state") if activity.get(key)
+        ))
